@@ -2,21 +2,27 @@ const express = require('express')
 const app = express()
 const baseUrl = "https://server"
 
-app.use(express.urlencoded());
+var sessionIds = []
 
+app.use(express.urlencoded());
 
 app.get("/.well-known/openid-configuration", (req, res) => {
   const metadata = {
     issuer: `${baseUrl}`,
     token_endpoint: `${baseUrl}/token`,
     response_types_supported: ["token"]
-  }
 
+  }
   res.json(metadata)
 })
 
-
 app.post("/credential", (req, res) => {})
+
+app.post("/token", (req, res) => {
+  var preauth = req.body['pre-authorized_code']
+  var payload = JSON.parse(Buffer.from(preauth.split('.')[1], 'base64').toString());
+
+})
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
   const metadata = {
@@ -31,25 +37,15 @@ app.get('/.well-known/openid-credential-issuer', (req, res) => {
       }
     },
     credential_endpoint: `${baseUrl}/credential`,
-
   }
   res.json(metadata)
-
 })
 
+app.post("/session", (req, res) => {
 
-
-
-
-
-
-
-
-
-
-app.post("/token", (req, res) => {
-  var preauth = req.body['pre-authorized_code']
-  var payload = JSON.parse(Buffer.from(preauth.split('.')[1], 'base64').toString());
+  sessionIds.push(req.body.session)
+  res.end("Session added correctly.")
+  
 })
 
 app.listen(3000, () => {
