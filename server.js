@@ -22,6 +22,7 @@ app.post("/token", (req, res) => {
   var preauth = req.body['pre-authorized_code']
   var payload = JSON.parse(Buffer.from(preauth.split('.')[1], 'base64').toString());
 
+  if (payload.aud === "TOKEN" || payload.iss === baseUrl) res.sendStatus(200)
 })
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
@@ -41,11 +42,14 @@ app.get('/.well-known/openid-credential-issuer', (req, res) => {
   res.json(metadata)
 })
 
-app.post("/session", (req, res) => {
 
+
+
+
+
+app.post("/session", (req, res) => {
   sessionIds.push(req.body.session)
   res.end("Session added correctly.")
-  
 })
 
 app.listen(3000, () => {
