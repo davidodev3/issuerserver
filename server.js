@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const baseUrl = "https://server"
+const baseUrl = "http://10.0.2.2:3000"
 
 var sessionIds = []
 
@@ -22,7 +22,7 @@ app.post("/token", (req, res) => {
   var preauth = req.body['pre-authorized_code']
   var payload = JSON.parse(Buffer.from(preauth.split('.')[1], 'base64').toString());
 
-  if (payload.aud === "TOKEN" || payload.iss === baseUrl) res.sendStatus(200)
+  if (payload.aud === "TOKEN" || payload.iss === baseUrl) res.send("access")
 })
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
