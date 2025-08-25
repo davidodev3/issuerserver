@@ -4,14 +4,16 @@ const baseUrl = "http://10.0.2.2:3000"
 
 var sessionIds = []
 
+const ENC = 'base64'
+
 app.use(express.urlencoded());
 
 app.get("/.well-known/openid-configuration", (req, res) => {
   const metadata = {
     issuer: `${baseUrl}`,
+
     token_endpoint: `${baseUrl}/token`,
     response_types_supported: ["token"]
-
   }
   res.json(metadata)
 })
@@ -19,19 +21,29 @@ app.get("/.well-known/openid-configuration", (req, res) => {
 app.post("/credential", (req, res) => {})
 
 app.post("/token", (req, res) => {
-  var preauth = req.body['pre-authorized_code']
-  var payload = JSON.parse(Buffer.from(preauth.split('.')[1], 'base64').toString());
 
-  if (payload.aud === "TOKEN" || payload.iss === baseUrl) res.send("access")
+  var preauth = req.body['pre-authorized_code']
+  var payload = JSON.parse(Buffer.from(preauth.split('.')[1], ENC).toString());
+
+  console.log(preauth)
+  
+  if (payload.aud === "TOKEN" || payload.iss === baseUrl) {
+    payload.aud = "ACCESS"
+    let accessBearerToken = preauth.split('.')[0] + '.' + Buffer.from(JSON.stringify(payload)).toString(ENC) + '.' + preauth.split('.')[2] //placeholder
+    res.json({access_token: accessBearerToken, token_type: "Bearer"})
+
+  }
 })
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
   const metadata = {
     credential_issuer: `${baseUrl}`, //TODO when hosting
-
     credential_configurations_supported: {
       "Visa": {
         format: "jwt_vc_json"
+
+      
+      
       },
       "UniversityDegree": {
         format: "jwt_vc_json"
@@ -39,13 +51,9 @@ app.get('/.well-known/openid-credential-issuer', (req, res) => {
     },
     credential_endpoint: `${baseUrl}/credential`,
   }
+
   res.json(metadata)
 })
-
-
-
-
-
 
 app.post("/session", (req, res) => {
   sessionIds.push(req.body.session)
@@ -53,5 +61,6 @@ app.post("/session", (req, res) => {
 })
 
 app.listen(3000, () => {
+  
   console.log(`Listening on: 3000`)
 }) 
