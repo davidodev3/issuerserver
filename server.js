@@ -26,14 +26,31 @@ app.post("/token", (req, res) => {
   var payload = JSON.parse(Buffer.from(preauth.split('.')[1], ENC).toString());
 
   console.log(preauth)
-  
-  if (payload.aud === "TOKEN" || payload.iss === baseUrl) {
+
+  if ((payload.aud === "TOKEN" || payload.iss === baseUrl) && sessionIds.includes(payload.sub)) {
     payload.aud = "ACCESS"
     let accessBearerToken = preauth.split('.')[0] + '.' + Buffer.from(JSON.stringify(payload)).toString(ENC) + '.' + preauth.split('.')[2] //placeholder
+
+    
+    let index = sessionIds.indexOf(payload.sub)
+    sessionIds.splice(index, 1)
+    
     res.json({access_token: accessBearerToken, token_type: "Bearer"})
+
+
+
+
+
+
+
+
+
+
+
 
   }
 })
+
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
   const metadata = {
@@ -41,26 +58,23 @@ app.get('/.well-known/openid-credential-issuer', (req, res) => {
     credential_configurations_supported: {
       "Visa": {
         format: "jwt_vc_json"
-
-      
-      
       },
       "UniversityDegree": {
         format: "jwt_vc_json"
+
       }
     },
     credential_endpoint: `${baseUrl}/credential`,
   }
-
   res.json(metadata)
 })
 
 app.post("/session", (req, res) => {
   sessionIds.push(req.body.session)
+
   res.end("Session added correctly.")
 })
 
 app.listen(3000, () => {
-  
   console.log(`Listening on: 3000`)
 }) 
