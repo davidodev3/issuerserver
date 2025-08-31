@@ -13,7 +13,7 @@ app.get("/.well-known/openid-configuration", (req, res) => {
     issuer: `${baseUrl}`,
 
     token_endpoint: `${baseUrl}/token`,
-    response_types_supported: ["token"]
+    response_types_supported: []
   }
   res.json(metadata)
 })
