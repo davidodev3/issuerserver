@@ -1,11 +1,5 @@
 {
    "did": "did:key:z6MknsfZcywHLcnRyy31V4DUdj1Fv4EHLNy9wrdVsSUeDnnh",
-   "jwk": {
-
-      "kty": "OKP",
-      "d": "NUNUQrRtTL-eKukpUjKV36TT_r1WgMKwEmZoSU5QyDY",
-      "crv": "Ed25519",
-      "kid": "hF4UjAVtZ3njwWG6X8gte8AHUabOB4iodckya6xYhDQ",
-      "x": "fR4GxOJnzGmQOZmatEUMB_B9dW5IlHzEOhWkeKgwn_4"
-   }
+   "jwk": {"kty":"OKP","d":"hlUD9gIf8wvclwbgn99OWGB7m2muaHpyRIyOMd4OJq8","crv":"Ed25519","kid":"ryA0NmAUy80xlJnntfPENZvSFjDpq1E6zH9urofogwA","x":"xObs9iIWIfanwQd96NZ3MXwc2yzZHKjI0hY693AVnyU"},
+   "public": {"kty":"OKP","crv":"Ed25519","kid":"ryA0NmAUy80xlJnntfPENZvSFjDpq1E6zH9urofogwA","x":"xObs9iIWIfanwQd96NZ3MXwc2yzZHKjI0hY693AVnyU"}
 }
