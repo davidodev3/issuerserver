@@ -34,7 +34,19 @@ app.post("/token", async (req, res) => {
 
   if ((payload.aud === "TOKEN" || payload.iss === baseUrl) && sessionIds.includes(payload.sub)) {
     payload.aud = "ACCESS"
-    //let accessBearerToken = preauth.split('.')[0] + '.' + Buffer.from(JSON.stringify(payload)).toString(ENC) + '.' + preauth.split('.')[2] //placeholder
+
+
+
+
+
+
+
+
+
+
+
+
+
     let accessBearerToken = await new jose.SignJWT(payload).setProtectedHeader(protectedHeader).sign(await private)
     let index = sessionIds.indexOf(payload.sub)
     sessionIds.splice(index, 1)
@@ -42,14 +54,12 @@ app.post("/token", async (req, res) => {
     res.json({access_token: accessBearerToken, token_type: "Bearer"})
 
   }
-
-
 })
 
 
 app.get('/.well-known/openid-credential-issuer', (req, res) => {
   const metadata = {
-    credential_issuer: `${baseUrl}`, //TODO when hosting
+    credential_issuer: `${baseUrl}`,
     credential_configurations_supported: {
 
       "Visa": {
@@ -69,7 +79,7 @@ app.get('/.well-known/openid-credential-issuer', (req, res) => {
 
 app.post("/session", (req, res) => {
   sessionIds.push(req.body.session)
-  res.end("Session added correctly.")
+  res.end("Session added correctly.") 
 })
 
 app.listen(3000, () => {
